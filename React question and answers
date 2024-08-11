@@ -377,3 +377,10 @@ Summary
 React Router allows you to define routes and handle navigation in a React application without reloading the page.
 It provides components like BrowserRouter, Route, Link, and hooks like useParams, useNavigate to create a seamless navigation experience.
 Dynamic routing enables the creation of paths with parameters, and programmatic navigation allows redirection within your application logic.
+
+6.Summary of Differences
+answer - BrowserRouter: Uses the history API, ideal for modern web apps with clean URLs.
+HashRouter: Uses URL hashes, good for static sites or older browsers.
+MemoryRouter: Keeps history in memory, ideal for testing or non-DOM environments.
+StaticRouter: Used on the server for server-side rendering, doesn't interact with the browser's URL.
+NativeRouter: Used in React Native apps for mobile navigation.
