@@ -142,3 +142,95 @@ Caveats:
 Memory Usage: Memoization uses memory to store cached results, which can grow with the number of unique inputs.
 Complexity: Overusing memoization can add complexity to your codebase and may not always yield significant performance improvements.
 By understanding and effectively implementing memoization, you can enhance the performance of your applications and avoid redundant computations.
+
+4. diffrenece between memoize, useMemo, React.memo ?
+
+ans - Here's a breakdown of the differences between memoize, useMemo, and React.memo in React:
+
+1. memoize
+Description:
+
+memoize is a general programming concept and not specific to React. It involves caching the results of a function based on its inputs to avoid redundant calculations.
+It can be implemented using various libraries or custom code.
+Use Case:
+
+Useful for optimizing functions with expensive computations by caching results based on input arguments.
+Example:
+
+javascript
+Copy code
+function memoize(fn) {
+  const cache = new Map();
+  
+  return function(...args) {
+    const key = JSON.stringify(args);
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    const result = fn(...args);
+    cache.set(key, result);
+    return result;
+  };
+}
+
+const expensiveFunction = (num) => num * 2;
+const memoizedFunction = memoize(expensiveFunction);
+Characteristics:
+
+General Purpose: Can be used in any JavaScript code, not limited to React.
+Manual Implementation: Requires custom implementation or libraries.
+Cache Management: Handles caching of function results based on arguments.
+2. useMemo
+Description:
+
+useMemo is a React hook that memoizes the result of a computation and returns the cached result when dependencies haven’t changed.
+It helps optimize performance by avoiding unnecessary recalculations of values.
+Use Case:
+
+Use useMemo to memoize expensive calculations or objects in functional components to prevent them from being recalculated on every render.
+Example:
+
+javascript
+Copy code
+import React, { useMemo } from 'react';
+
+function MyComponent({ value }) {
+  const computedValue = useMemo(() => {
+    console.log('Computing value...');
+    return value * 2;
+  }, [value]);
+
+  return <div>{computedValue}</div>;
+}
+Characteristics:
+
+React Hook: Designed specifically for use within functional components.
+Dependency Array: Recalculates the memoized value only when dependencies change.
+Optimization for Rendering: Prevents recalculation of values or objects unless necessary.
+3. React.memo
+Description:
+
+React.memo is a higher-order component (HOC) in React that memoizes functional components. It prevents a functional component from re-rendering unless its props change based on a shallow comparison.
+Use Case:
+
+Use React.memo to optimize functional components by avoiding unnecessary re-renders when the props haven't changed.
+Example:
+
+javascript
+Copy code
+import React from 'react';
+
+const MyComponent = React.memo(({ value }) => {
+  console.log('Rendering MyComponent');
+  return <div>{value}</div>;
+});
+Characteristics:
+
+Higher-Order Component: Wraps a functional component to enable memoization.
+Shallow Comparison: Compares props using shallow equality to determine if re-rendering is necessary.
+Optimization for Rendering: Reduces unnecessary re-renders of functional components.
+Summary
+memoize: A general-purpose technique for caching function results based on input arguments, not specific to React. Useful for optimizing functions with expensive calculations.
+useMemo: A React hook that memoizes a computed value or object in functional components based on dependencies, preventing unnecessary recalculations.
+React.memo: A React higher-order component that memoizes a functional component to prevent unnecessary re-renders based on shallow comparison of props.
+Each has its place in optimizing performance, depending on whether you're working with functions or React components.
