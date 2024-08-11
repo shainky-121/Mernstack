@@ -49,3 +49,12 @@ Props and State Consistency: Ensure that the props and state passed to a Pure Co
 Caveats:
 Deeply Nested Objects: Since Pure Components use shallow comparison, they might not work as expected with deeply nested objects or arrays, as the shallow comparison checks only the reference, not the content.
 Immutability: Ensure that the data passed as props and state is immutable to take full advantage of Pure Components.
+
+
+2. difference between pure component and regular Component?
+
+answer - In React, a Pure Component is a type of component that automatically checks whether it needs to update its display based on changes in its input data (props and state).
+
+Regular Component: When a component's props or state change, it re-renders to update the display, even if the change doesn't affect what it shows.
+
+Pure Component: This component is smarter. It compares the current and previous props and state. If nothing significant has changed, it skips re-rendering, saving time and making the app faster.
