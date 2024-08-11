@@ -234,3 +234,146 @@ memoize: A general-purpose technique for caching function results based on input
 useMemo: A React hook that memoizes a computed value or object in functional components based on dependencies, preventing unnecessary recalculations.
 React.memo: A React higher-order component that memoizes a functional component to prevent unnecessary re-renders based on shallow comparison of props.
 Each has its place in optimizing performance, depending on whether you're working with functions or React components.
+
+5 .What is React Router, and how do you use it?
+
+answer  - React Router is a standard library for routing in React applications. It enables you to create a single-page web application with navigation that doesn’t require the page to reload as the user navigates. React Router allows you to define routes in your application, map them to specific components, and manage the URL in the browser to reflect the current view.
+
+Key Concepts in React Router
+Routes: Define the mapping between the URL paths and the components that should be rendered when those paths are accessed.
+
+Link: A component that renders an anchor tag (<a>) to navigate between different routes in your application without reloading the page.
+
+Switch (or Routes in v6): Ensures that only one route is rendered at a time. It renders the first child <Route> that matches the location.
+
+BrowserRouter: The primary component that enables React Router in your application. It wraps your application and provides the routing context.
+
+useParams: A hook that allows you to access the parameters in the URL.
+
+useHistory (Deprecated in v6): Allows you to programmatically navigate or access the browser history.
+
+useNavigate: In React Router v6, this hook replaces useHistory for programmatic navigation.
+
+Installing React Router
+First, you need to install react-router-dom, which is the version of React Router for web applications:
+
+bash
+Copy code
+npm install react-router-dom
+Basic Usage Example
+Here's a basic example of how to use React Router in a React application.
+
+1. Setting Up Routes
+javascript
+Copy code
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+
+function Home() {
+  return <h2>Home Page</h2>;
+}
+
+function About() {
+  return <h2>About Page</h2>;
+}
+
+function Contact() {
+  return <h2>Contact Page</h2>;
+}
+
+function App() {
+  return (
+    <Router>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/about">About</Link>
+          </li>
+          <li>
+            <Link to="/contact">Contact</Link>
+          </li>
+        </ul>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
+Explanation:
+BrowserRouter: Wraps the entire application to enable routing.
+Link: Used to create navigable links without reloading the page.
+Routes: Contains all the defined routes in the application. It renders the component that matches the current URL.
+Route: Defines a specific route. The path prop specifies the URL path, and the element prop specifies the component to render.
+2. Dynamic Routes with Parameters
+You can define routes that include parameters, which allow you to create dynamic paths.
+
+javascript
+Copy code
+function User({ name }) {
+  return <h2>User: {name}</h2>;
+}
+
+function UserDetail() {
+  let { name } = useParams();
+  return <User name={name} />;
+}
+
+function App() {
+  return (
+    <Router>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/user/John">John's Profile</Link>
+          </li>
+          <li>
+            <Link to="/user/Jane">Jane's Profile</Link>
+          </li>
+        </ul>
+      </nav>
+
+      <Routes>
+        <Route path="/user/:name" element={<UserDetail />} />
+      </Routes>
+    </Router>
+  );
+}
+Explanation:
+useParams: A hook that extracts the name parameter from the URL, allowing you to use it in the component.
+Dynamic Route: /user/:name is a dynamic route where :name is a placeholder for any user name.
+3. Programmatic Navigation
+You can navigate programmatically using useNavigate (in React Router v6).
+
+javascript
+Copy code
+import { useNavigate } from 'react-router-dom';
+
+function Home() {
+  const navigate = useNavigate();
+
+  function goToAbout() {
+    navigate('/about');
+  }
+
+  return (
+    <div>
+      <h2>Home Page</h2>
+      <button onClick={goToAbout}>Go to About Page</button>
+    </div>
+  );
+}
+Explanation:
+useNavigate: Hook that allows you to programmatically navigate to a different route. The navigate function is used to redirect the user.
+Summary
+React Router allows you to define routes and handle navigation in a React application without reloading the page.
+It provides components like BrowserRouter, Route, Link, and hooks like useParams, useNavigate to create a seamless navigation experience.
+Dynamic routing enables the creation of paths with parameters, and programmatic navigation allows redirection within your application logic.
