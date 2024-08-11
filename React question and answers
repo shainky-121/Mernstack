@@ -1,0 +1,51 @@
+1. what is Pure Components in react ?
+
+Ans. In React, a Pure Component is a component that renders the same output given the same input props and state. It is a more optimized version of a regular component because it implements a shallow comparison of props and state in its shouldComponentUpdate method to determine whether the component should re-render.
+
+Key Points About Pure Components:
+Shallow Comparison: Pure Components automatically perform a shallow comparison of the previous and next props and state. If they are the same, the component does not re-render, which can improve performance.
+
+Stateless or Stateful: Pure Components can be either stateless (function components) or stateful (class components).
+
+Implementation in Class Components: When using class components, you can create a Pure Component by extending React.PureComponent instead of React.Component.
+
+Functional Components: In functional components, you can achieve a similar effect by using React.memo to wrap the component, which also performs a shallow comparison of props.
+
+Example of a Pure Component (Class Component):
+javascript
+Copy code
+import React, { PureComponent } from 'react';
+
+class MyPureComponent extends PureComponent {
+  render() {
+    console.log('Rendering MyPureComponent');
+    return (
+      <div>
+        <h1>{this.props.title}</h1>
+      </div>
+    );
+  }
+}
+
+export default MyPureComponent;
+Example with React.memo (Functional Component):
+javascript
+Copy code
+import React from 'react';
+
+const MyPureFunctionComponent = React.memo(({ title }) => {
+  console.log('Rendering MyPureFunctionComponent');
+  return (
+    <div>
+      <h1>{title}</h1>
+    </div>
+  );
+});
+
+export default MyPureFunctionComponent;
+When to Use Pure Components:
+Performance Optimization: Use Pure Components when you want to avoid unnecessary re-renders to improve performance, especially in large applications.
+Props and State Consistency: Ensure that the props and state passed to a Pure Component are consistent and immutable to benefit from shallow comparisons.
+Caveats:
+Deeply Nested Objects: Since Pure Components use shallow comparison, they might not work as expected with deeply nested objects or arrays, as the shallow comparison checks only the reference, not the content.
+Immutability: Ensure that the data passed as props and state is immutable to take full advantage of Pure Components.
