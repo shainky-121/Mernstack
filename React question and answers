@@ -458,3 +458,121 @@ Router: Sets up the routing context and history. It's the outermost component th
 Routes: Groups multiple Route components and renders the first matching route.
 Route: Defines a specific route, mapping a path to a component to be rendered.
 Together, these components form the backbone of routing in a React application, each playing a distinct role in how routes are matched and rendered.
+
+9. how we can use HOC in functional componet
+
+Ans - Higher-Order Components (HOCs) can indeed be used with functional components in React. The principle remains the same: an HOC is a function that takes a component and returns a new component with enhanced functionality. With the introduction of React hooks, working with HOCs and functional components has become even more streamlined.
+
+Example of Using HOC with Functional Components
+Here’s a step-by-step guide on how to use an HOC with functional components.
+
+1. Define the HOC
+Let's create an HOC that adds some additional props to a component. For instance, an HOC that provides a timestamp prop.
+
+javascript
+Copy code
+import React from 'react';
+
+// HOC that adds a timestamp prop
+function withTimestamp(WrappedComponent) {
+  return function(props) {
+    const timestamp = new Date().toISOString();
+    return <WrappedComponent {...props} timestamp={timestamp} />;
+  };
+}
+
+export default withTimestamp;
+2. Use the HOC with a Functional Component
+Now, we’ll use this HOC with a functional component. The functional component will receive the timestamp prop from the HOC.
+
+javascript
+Copy code
+import React from 'react';
+import withTimestamp from './withTimestamp'; // Import the HOC
+
+// Functional component that receives extra props
+function Display(props) {
+  return <div>Current Timestamp: {props.timestamp}</div>;
+}
+
+// Enhance the Display component with the timestamp
+const EnhancedDisplay = withTimestamp(Display);
+
+export default EnhancedDisplay;
+3. Render the Enhanced Component
+Finally, you can render the enhanced component within your application:
+
+javascript
+Copy code
+import React from 'react';
+import ReactDOM from 'react-dom';
+import EnhancedDisplay from './EnhancedDisplay'; // Import the enhanced component
+
+function App() {
+  return (
+    <div>
+      <h1>My App</h1>
+      <EnhancedDisplay />
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+Explanation:
+HOC Definition (withTimestamp):
+
+The withTimestamp HOC is a function that takes a component (WrappedComponent) and returns a new function.
+This new function receives the original component’s props and adds a timestamp prop.
+The returned function renders the original component with the added timestamp prop.
+Functional Component (Display):
+
+The Display component is a functional component that receives props and uses the timestamp prop added by the HOC.
+Using the HOC:
+
+EnhancedDisplay is created by applying the withTimestamp HOC to the Display component.
+When EnhancedDisplay is rendered, it will receive the timestamp prop from the HOC.
+Key Points:
+Functional Components: You can use HOCs with functional components just like with class components. The HOC enhances the component by wrapping it and providing additional props or functionality.
+Hooks Compatibility: Functional components using hooks can work seamlessly with HOCs. However, if your HOC needs to handle side effects or state, you can use React hooks inside the HOC.
+Here’s a more advanced example using hooks in the HOC:
+
+HOC with Hooks
+javascript
+Copy code
+import React, { useState, useEffect } from 'react';
+
+// HOC that provides current time as a prop
+function withCurrentTime(WrappedComponent) {
+  return function(props) {
+    const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
+
+    useEffect(() => {
+      const intervalId = setInterval(() => {
+        setCurrentTime(new Date().toLocaleTimeString());
+      }, 1000);
+
+      return () => clearInterval(intervalId);
+    }, []);
+
+    return <WrappedComponent {...props} currentTime={currentTime} />;
+  };
+}
+
+export default withCurrentTime;
+Using the HOC with a Functional Component
+javascript
+Copy code
+import React from 'react';
+import withCurrentTime from './withCurrentTime'; // Import the HOC
+
+// Functional component that displays current time
+function Clock(props) {
+  return <div>Current Time: {props.currentTime}</div>;
+}
+
+// Enhance the Clock component with the current time
+const EnhancedClock = withCurrentTime(Clock);
+
+export default EnhancedClock;
+This approach ensures that functional components can also benefit from additional logic or props provided by HOCs, integrating smoothly with React’s functional component paradigm.
+
