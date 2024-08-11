@@ -657,3 +657,195 @@ Uncontrolled Components:
 When you need simpler forms with minimal state management.
 When performance is a concern and you want to reduce re-renders.
 When working with existing codebases or third-party libraries where state is managed outside of React.
+
+
+11 . List of some custom hooks.
+
+answer = Certainly! Custom hooks in React are a powerful way to reuse stateful logic across different components. Here’s a list of some common and useful custom hooks, along with brief descriptions:
+
+1. useLocalStorage
+Purpose: Synchronize a state value with localStorage.
+Usage: Useful for persisting user preferences or settings across sessions.
+Example:
+javascript
+Copy code
+import { useState } from 'react';
+
+const useLocalStorage = (key, initialValue) => {
+  const [storedValue, setStoredValue] = useState(() => {
+    const item = window.localStorage.getItem(key);
+    return item ? JSON.parse(item) : initialValue;
+  });
+
+  const setValue = value => {
+    setStoredValue(value);
+    window.localStorage.setItem(key, JSON.stringify(value));
+  };
+
+  return [storedValue, setValue];
+};
+
+export default useLocalStorage;
+2. useDebounce
+Purpose: Debounce a value, delaying updates to avoid rapid state changes.
+Usage: Useful for reducing the frequency of API calls or other expensive operations triggered by user input.
+Example:
+javascript
+Copy code
+import { useState, useEffect } from 'react';
+
+const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};
+
+export default useDebounce;
+3. useMediaQuery
+Purpose: Monitor screen width and detect if a media query matches.
+Usage: Useful for responsive design and handling different screen sizes.
+Example:
+javascript
+Copy code
+import { useState, useEffect } from 'react';
+
+const useMediaQuery = (query) => {
+  const [matches, setMatches] = useState(window.matchMedia(query).matches);
+
+  useEffect(() => {
+    const mediaQueryList = window.matchMedia(query);
+    const handleChange = () => setMatches(mediaQueryList.matches);
+
+    handleChange(); // Set initial state
+    mediaQueryList.addEventListener('change', handleChange);
+
+    return () => {
+      mediaQueryList.removeEventListener('change', handleChange);
+    };
+  }, [query]);
+
+  return matches;
+};
+
+export default useMediaQuery;
+4. usePrevious
+Purpose: Keep track of the previous value of a state or prop.
+Usage: Useful for comparing previous and current values.
+Example:
+javascript
+Copy code
+import { useRef, useEffect } from 'react';
+
+const usePrevious = value => {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
+};
+
+export default usePrevious;
+5. useFetch
+Purpose: Fetch data from an API and handle loading, error, and data states.
+Usage: Commonly used for making network requests.
+Example:
+javascript
+Copy code
+import { useState, useEffect } from 'react';
+
+const useFetch = (url) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const result = await response.json();
+        if (isMounted) {
+          setData(result);
+          setLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setError(error);
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchData();
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [url]);
+
+  return { data, loading, error };
+};
+
+export default useFetch;
+6. useOnClickOutside
+Purpose: Detect clicks outside a specified element to trigger a callback.
+Usage: Useful for handling dropdowns, modals, or popovers.
+Example:
+javascript
+Copy code
+import { useEffect } from 'react';
+
+const useOnClickOutside = (ref, callback) => {
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        callback();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [ref, callback]);
+};
+
+export default useOnClickOutside;
+7. useEventListener
+Purpose: Add and remove event listeners for a specific event type.
+Usage: Useful for attaching event listeners to window, document, or specific DOM elements.
+Example:
+javascript
+Copy code
+import { useEffect } from 'react';
+
+const useEventListener = (eventName, handler, element = window) => {
+  useEffect(() => {
+    const eventListener = (event) => handler(event);
+
+    element.addEventListener(eventName, eventListener);
+
+    return () => {
+      element.removeEventListener(eventName, eventListener);
+    };
+  }, [eventName, handler, element]);
+};
+
+export default useEventListener;
+These custom hooks provide reusable functionality that can simplify your components and make your code more modular and maintainable. Feel free to adjust or expand these hooks based on your specific needs!
