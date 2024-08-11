@@ -58,3 +58,87 @@ answer - In React, a Pure Component is a type of component that automatically ch
 Regular Component: When a component's props or state change, it re-renders to update the display, even if the change doesn't affect what it shows.
 
 Pure Component: This component is smarter. It compares the current and previous props and state. If nothing significant has changed, it skips re-rendering, saving time and making the app faster.
+
+
+3. what is Memoization?
+answ - Memoization is an optimization technique used to improve the performance of functions by caching their results based on input parameters. When a function is memoized, it stores the results of expensive function calls and returns the cached result when the same inputs occur again. This can significantly reduce the time complexity of repetitive calculations and improve performance.
+
+Key Concepts of Memoization:
+Caching Results: Memoization stores the result of a function call with specific arguments. If the function is called again with the same arguments, it retrieves the result from the cache instead of recalculating it.
+
+Avoiding Redundant Computation: By caching results, memoization avoids redundant calculations and saves processing time, especially for functions with expensive computations.
+
+Function Purity: Memoization is most effective for pure functions. A pure function always produces the same output for the same input and does not have side effects. This predictability allows memoization to work reliably.
+
+Example in JavaScript:
+Here’s a simple example of memoization using a JavaScript function:
+
+javascript
+Copy code
+function memoize(fn) {
+  const cache = new Map();
+  
+  return function(...args) {
+    const key = JSON.stringify(args);
+    
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    
+    const result = fn(...args);
+    cache.set(key, result);
+    return result;
+  };
+}
+
+const expensiveFunction = (num) => {
+  console.log('Computing result...');
+  return num * 2;
+};
+
+const memoizedFunction = memoize(expensiveFunction);
+
+console.log(memoizedFunction(5)); // Computing result... 10
+console.log(memoizedFunction(5)); // 10 (cached result)
+Memoization in React:
+In React, memoization is often used to optimize functional components and prevent unnecessary re-renders. React provides a built-in hook called useMemo and a higher-order component called React.memo for this purpose:
+
+React.memo for Functional Components:
+
+React.memo is a higher-order component that memoizes the result of a functional component.
+It only re-renders the component if the props change, based on shallow comparison.
+javascript
+Copy code
+import React from 'react';
+
+const MyComponent = React.memo(({ value }) => {
+  console.log('Rendering MyComponent');
+  return <div>{value}</div>;
+});
+
+export default MyComponent;
+useMemo Hook:
+
+The useMemo hook memoizes the result of a computation and returns the cached result when the dependencies have not changed.
+It is used to optimize performance by avoiding costly recalculations.
+javascript
+Copy code
+import React, { useMemo } from 'react';
+
+function MyComponent({ value }) {
+  const computedValue = useMemo(() => {
+    console.log('Computing value...');
+    return value * 2;
+  }, [value]);
+
+  return <div>{computedValue}</div>;
+}
+
+export default MyComponent;
+When to Use Memoization:
+Expensive Calculations: Use memoization to optimize functions with heavy computations that are called frequently with the same arguments.
+Functional Components: In React, memoize components or computations to avoid unnecessary re-renders and improve performance.
+Caveats:
+Memory Usage: Memoization uses memory to store cached results, which can grow with the number of unique inputs.
+Complexity: Overusing memoization can add complexity to your codebase and may not always yield significant performance improvements.
+By understanding and effectively implementing memoization, you can enhance the performance of your applications and avoid redundant computations.
